@@ -1,8 +1,20 @@
 #include <iostream>
 #include <format>
+#include <thread>
+#include <atomic>
+#include <mutex>
+#include <condition_variable>
 
 #include "function.h"
 #include "math.h"
+
+
+bool predicat_cond = false;
+
+std::mutex mtx;
+std::condition_variable cv;
+
+std::atomic<bool> exitGame{ false };
 
 
 int main(void)
@@ -14,34 +26,62 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "Maze");
 
-    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
-    //--------------------------------------------------------------------------------------
+    SetTargetFPS(60);
 
     Image image_level = LoadImage("C:\\Users\\mrsmi\\GitHub\\CourseWork\\source\\level.png");
 
-    auto wall = GetImageWall(image_level);
+    std::vector<Rectangle> wall;
+    try
+    {
+        wall = //GetWall(R"(C:\Users\mrsmi\GitHub\Coursework\source\level.csv)");
+        GetWall(image_level);
+    }
+    catch (const std::exception& ex)
+    {
+        std::cout << ex.what() << std::endl;
+    }
 
     UnloadImage(image_level);
 
+    std::thread consoleThread(ConsoleThread);
+
+    //--------------------------------------------------------------------------------------
+
     // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
+    while (!WindowShouldClose())
     {
         // Update
         //----------------------------------------------------------------------------------
-
-        //----------------------------------------------------------------------------------
+        if (IsKeyDown(KEY_GRAVE))
+        {
+            exitGame = false;
+            predicat_cond = !predicat_cond;
+        	cv.notify_one();
+        }
+    	//----------------------------------------------------------------------------------
 
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        for (auto rectangle : wall)
+        for (const auto& rectangle : wall)
             DrawRectangleRec(rectangle, BLACK);
+
+        DrawFPS(10, 10);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
+
+    // Turn off thread
+	//--------------------------------------------------------------------------------------
+    exitGame = true;
+    predicat_cond = true;
+    cv.notify_one();
+    consoleThread.join();
+    //--------------------------------------------------------------------------------------
+
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
