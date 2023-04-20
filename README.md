@@ -1,2 +1,4 @@
-# Coursework
- Simple Maze on raylib. Multithreading: Console, Logic. Creating level, load own level.
+# CourseWork
+    Simple Maze on raylib. 
+    Multithreading: Console, Logic. 
+    Creating level, load own level.
