@@ -6,6 +6,7 @@
 #include <condition_variable>
 
 #include "function.h"
+#include "Wall.h"
 #include "math.h"
 
 
@@ -14,7 +15,7 @@ bool predicat_cond = false;
 std::mutex mtx;
 std::condition_variable cv;
 
-std::atomic<bool> exitGame{ false };
+std::atomic<bool> exit_console_game{ false };
 
 
 int main(void)
@@ -30,11 +31,9 @@ int main(void)
 
     Image image_level = LoadImage("C:\\Users\\mrsmi\\GitHub\\CourseWork\\source\\level.png");
 
-    std::vector<Rectangle> wall;
     try
     {
-        wall = //GetWall(R"(C:\Users\mrsmi\GitHub\Coursework\source\level.csv)");
-        GetWall(image_level);
+        Wall::LoadData(image_level);
     }
     catch (const std::exception& ex)
     {
@@ -44,7 +43,6 @@ int main(void)
     UnloadImage(image_level);
 
     std::thread consoleThread(ConsoleThread);
-
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -54,7 +52,7 @@ int main(void)
         //----------------------------------------------------------------------------------
         if (IsKeyDown(KEY_GRAVE))
         {
-            exitGame = false;
+            exit_console_game = false;
             predicat_cond = !predicat_cond;
         	cv.notify_one();
         }
@@ -65,7 +63,7 @@ int main(void)
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        for (const auto& rectangle : wall)
+        for (const auto& rectangle : Wall::get_wall())
             DrawRectangleRec(rectangle, BLACK);
 
         DrawFPS(10, 10);
@@ -76,7 +74,7 @@ int main(void)
 
     // Turn off thread
 	//--------------------------------------------------------------------------------------
-    exitGame = true;
+    exit_console_game = true;
     predicat_cond = true;
     cv.notify_one();
     consoleThread.join();
