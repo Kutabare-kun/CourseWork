@@ -16,60 +16,54 @@ extern bool predicate_cond;
 
 bool operator==(const Color& left, const Color& right)
 {
-    return left.a == right.a && left.r == right.r && left.g == right.g && left.b == right.b;
-}
-
-
-bool operator==(const Rectangle& left, const Rectangle& right)
-{
-    return left.x == right.x && left.y == right.y && left.height == right.height && left.width == right.width;
+	return left.a == right.a && left.r == right.r && left.g == right.g && left.b == right.b;
 }
 
 
 bool FindColor(const Image& level, const int& StartX, const int& StartY, const int& EndX, const int& EndY, Color color)
 {
-    for (int x = StartX; x < EndX; ++x)
-        for (int y = StartY; y < EndY; ++y)
-            if (Color color_pixel = GetImageColor(level, x, y); color_pixel == color)
-                return true;
+	for (int x = StartX; x < EndX; ++x)
+		for (int y = StartY; y < EndY; ++y)
+			if (Color color_pixel = GetImageColor(level, x, y); color_pixel == color)
+				return true;
 
-    return false;
+	return false;
 }
 
 
 void ConsoleThread()
 {
-    std::string input;
+	std::string input;
 
-    while (!exit_console_game)
-    {
-        std::unique_lock<std::mutex> ulm{ mtx };
-        std::cin.clear();
-        cv.wait(ulm, ConsoleOpen);
+	while (!exit_console_game)
+	{
+		std::unique_lock<std::mutex> ulm{mtx};
+		std::cin.clear();
+		cv.wait(ulm, ConsoleOpen);
 
-        if (exit_console_game)
-	        break;
+		if (exit_console_game)
+			break;
 
-        std::cout << "Enter command: ";
-        std::getline(std::cin, input);
+		std::cout << "Enter command: ";
+		std::getline(std::cin, input);
 
-        if (!input.empty())
-        {
-            // Process input
-            std::cout << "Received input: " << input << std::endl;
+		if (!input.empty())
+		{
+			// Process input
+			std::cout << "Received input: " << input << std::endl;
 
-            predicate_cond = false;
-        }
+			predicate_cond = false;
+		}
 
-        if (input == "exit")
-            exit_console_game = true;
+		if (input == "exit")
+			exit_console_game = true;
 
-        std::this_thread::sleep_for(1s);
-    }
+		std::this_thread::sleep_for(1s);
+	}
 }
 
 // Predicate for Console
 bool ConsoleOpen()
 {
-    return predicate_cond;
+	return predicate_cond;
 }

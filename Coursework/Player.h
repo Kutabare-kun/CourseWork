@@ -1,18 +1,21 @@
 #include <raylib.h>
 
 
-class Player {
+class Player
+{
 private:
-    Rectangle playerRect;
-    Vector2 velocity;
-    float speed;
+	Rectangle playerRect;
+	Vector2 velocity;
+	float speed;
+
+	void ResolveCollision(const Rectangle& wall);
 
 public:
-    Player(float x, float y, float width, float height, float speed);
+	Player(float x, float y, float width, float height, float speed);
 
-    void Update(float delta);
+	void Update(float delta);
 
-    void Draw();
+	void Draw();
 
-    const Rectangle& GetPlayerRect() const { return playerRect; }
+	const Rectangle& GetPlayerRect() const { return playerRect; }
 };
