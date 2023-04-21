@@ -1,5 +1,6 @@
 #pragma once
 #include <raylib.h>
+#include <string>
 #include <vector>
 
 class Wall
@@ -16,5 +17,6 @@ public:
     static Wall& GetInstance();
     static void LoadData(const Image& level);
     static void LoadData(const std::string& path);
+    static void MergeCloseRectangles();
     static const std::vector<Rectangle>& get_wall() { return objects; }
 };

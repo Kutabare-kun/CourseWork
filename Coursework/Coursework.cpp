@@ -1,16 +1,19 @@
 #include <iostream>
-#include <format>
+#include <filesystem>
+#include <string>
 #include <thread>
 #include <atomic>
 #include <mutex>
 #include <condition_variable>
 
 #include "function.h"
+#include "Player.h"
 #include "Wall.h"
-#include "math.h"
 
 
-bool predicat_cond = false;
+bool predicate_cond = false;
+
+std::string path_source{ std::filesystem::current_path().string().erase(std::filesystem::current_path().string().find_last_of('\\')) };
 
 std::mutex mtx;
 std::condition_variable cv;
@@ -29,11 +32,12 @@ int main(void)
 
     SetTargetFPS(60);
 
-    Image image_level = LoadImage("C:\\Users\\mrsmi\\GitHub\\CourseWork\\source\\level.png");
+    Image image_level = LoadImage((path_source + R"(\source\level.png)").c_str());
 
     try
     {
         Wall::LoadData(image_level);
+        Wall::MergeCloseRectangles();
     }
     catch (const std::exception& ex)
     {
@@ -43,6 +47,9 @@ int main(void)
     UnloadImage(image_level);
 
     std::thread consoleThread(ConsoleThread);
+
+    Player player{ 5, 5, 20, 20, 500 };
+
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -53,9 +60,11 @@ int main(void)
         if (IsKeyDown(KEY_GRAVE))
         {
             exit_console_game = false;
-            predicat_cond = !predicat_cond;
+            predicate_cond = !predicate_cond;
         	cv.notify_one();
         }
+
+        player.Update(GetFrameTime());
     	//----------------------------------------------------------------------------------
 
         // Draw
@@ -64,7 +73,12 @@ int main(void)
         ClearBackground(RAYWHITE);
 
         for (const auto& rectangle : Wall::get_wall())
-            DrawRectangleRec(rectangle, BLACK);
+	        if (rectangle.width > 64)
+                DrawRectangleRec(rectangle, RED);
+            else if (rectangle.height > 64)
+				DrawRectangleRec(rectangle, BLACK);
+
+        player.Draw();
 
         DrawFPS(10, 10);
 
@@ -75,7 +89,7 @@ int main(void)
     // Turn off thread
 	//--------------------------------------------------------------------------------------
     exit_console_game = true;
-    predicat_cond = true;
+    predicate_cond = true;
     cv.notify_one();
     consoleThread.join();
     //--------------------------------------------------------------------------------------

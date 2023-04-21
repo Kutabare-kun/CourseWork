@@ -1,8 +1,4 @@
 #include <iostream>
-#include <stdexcept>
-#include <filesystem>
-#include <fstream>
-#include <ranges>
 #include <atomic>
 #include <chrono>
 
@@ -15,12 +11,18 @@ using namespace std::chrono_literals;
 extern std::mutex mtx;
 extern std::condition_variable cv;
 extern std::atomic<bool> exit_console_game;
-extern bool predicat_cond;
+extern bool predicate_cond;
 
 
 bool operator==(const Color& left, const Color& right)
 {
     return left.a == right.a && left.r == right.r && left.g == right.g && left.b == right.b;
+}
+
+
+bool operator==(const Rectangle& left, const Rectangle& right)
+{
+    return left.x == right.x && left.y == right.y && left.height == right.height && left.width == right.width;
 }
 
 
@@ -56,7 +58,7 @@ void ConsoleThread()
             // Process input
             std::cout << "Received input: " << input << std::endl;
 
-            predicat_cond = false;
+            predicate_cond = false;
         }
 
         if (input == "exit")
@@ -66,8 +68,8 @@ void ConsoleThread()
     }
 }
 
-
+// Predicate for Console
 bool ConsoleOpen()
 {
-    return predicat_cond;
+    return predicate_cond;
 }
