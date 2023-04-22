@@ -136,7 +136,9 @@
     <ClCompile Include="Finish.cpp" />
     <ClCompile Include="function.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="MainMenuScene.cpp" />
+    <ClCompile Include="Pathfinding.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerFactory.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -148,7 +150,9 @@
     <ClInclude Include="Finish.h" />
     <ClInclude Include="function.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="MainMenuScene.h" />
+    <ClInclude Include="Pathfinding.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerFactory.h" />
     <ClInclude Include="Scene.h" />

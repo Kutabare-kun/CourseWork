@@ -1,25 +1,31 @@
 #pragma once
-#include <raylib.h>
-#include <vector>
 
+#include <vector>
+#include <raylib.h>
 #include "Grid.h"
 #include "Pathfinding.h"
 
 class Enemy
 {
 private:
-    Vector2 position;
+    Rectangle enemyRect;
+    Vector2 targetPosition;
     Vector2 initialPosition;
-    float speed;
-    int radius;
-
     std::vector<Vector2> path;
+    Grid* grid;
+    float speed;
 
 public:
-    Enemy(float x, float y, float speed, int radius);
+    Enemy() = default;
 
-    void Update(float delta, const Vector2& playerPosition, const Grid& grid);
-    void Draw();
+    void Init(float x, float y, float width, float height, Grid* grid, float speed);
+    void Init(Rectangle rec, Grid* grid, float speed);
 
-    const Vector2& GetPosition() const { return position; }
+    void SetTarget(const Vector2& target);
+    void Update(float delta);
+    void Draw() const;
+    bool ReachedTarget() const;
+    void UpdatePath();
+
+    static std::vector<Rectangle> LoadData(const Image& level);
 };
