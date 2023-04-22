@@ -23,7 +23,10 @@ public:
 	void Update(float delta);
 	void Draw();
 
+	void SetPos(const Vector2& pos);
+
 	void SetAlive();
+	void SetAlive(bool alive);
 	const bool& IsAlive() const { return alive; }
 
 	const Rectangle& GetPlayerRect() const { return playerRect; }

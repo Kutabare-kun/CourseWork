@@ -7,6 +7,9 @@
 #include "function.h"
 
 
+extern int size_box;
+
+
 Wall::Wall()
 	: objects()
 {}
@@ -23,7 +26,6 @@ void Wall::LoadData(const Image& level)
 {
 	if (!level.data or level.height <= 0 or level.width <= 0) throw std::runtime_error{"Image do not load!"};
 
-	constexpr int size_box{64};
 	const int CountX = level.width / size_box;
 	const int CountY = level.height / size_box;
 
@@ -48,7 +50,6 @@ void Wall::LoadData(const std::string& path)
 
 	if (!file) throw std::runtime_error{"Unable to open file: " + path};
 
-	constexpr int size_box{64};
 	objects.clear();
 
 	std::string line;

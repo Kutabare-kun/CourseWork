@@ -24,6 +24,7 @@ public:
 	void Init();
 	static SceneManager& GetInstance();
 	void SetActiveScene(SceneUpdate index);
+	void Restart();
 	void Update(float deltaTime);
 	void Draw();
 };

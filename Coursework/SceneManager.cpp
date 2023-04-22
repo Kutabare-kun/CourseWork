@@ -32,6 +32,12 @@ void SceneManager::SetActiveScene(SceneUpdate index)
 	scenes[current_scene]->onActivate();
 }
 
+void SceneManager::Restart()
+{
+	scenes[current_scene]->onDeactivate();
+	scenes[current_scene]->onActivate();
+}
+
 
 void SceneManager::Update(float deltaTime)
 {

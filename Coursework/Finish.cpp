@@ -9,6 +9,9 @@
 #include "Wall.h"
 
 
+extern int size_box;
+
+
 void Finish::SetFinishArea(float x, float y, float width, float height)
 {
 	area = { x, y ,width ,height };
@@ -25,7 +28,6 @@ void Finish::LoadData(const Image& level)
 {
 	if (!level.data or level.height <= 0 or level.width <= 0) throw std::runtime_error{ "Image do not load!" };
 
-	constexpr int size_box{ 64 };
 	const int CountX = level.width / size_box;
 	const int CountY = level.height / size_box;
 
@@ -34,7 +36,7 @@ void Finish::LoadData(const Image& level)
 			if (FindColor(level, x * size_box, y * size_box, x * size_box + size_box, y * size_box + size_box, ORANGE))
 			{
 				area = { static_cast<float>(x * size_box), static_cast<float>(y * size_box),
-				size_box, size_box };
+				static_cast<float>(size_box), static_cast<float>(size_box) };
 				Wall::GetInstance().DeleteBox({ static_cast<float>(x * size_box), static_cast<float>(y * size_box) });
 				return;
 			}
@@ -50,8 +52,6 @@ void Finish::LoadData(const std::string& path)
 	std::fstream file{ path, std::ios_base::in };
 
 	if (!file) throw std::runtime_error{ "Unable to open file: " + path };
-
-	constexpr int size_box{ 64 };
 
 	std::string line;
 	size_t y{};
@@ -69,7 +69,7 @@ void Finish::LoadData(const std::string& path)
 					if (index == "9")
 					{
 						area = { static_cast<float>(x * size_box), static_cast<float>(y * size_box),
-						size_box, size_box };
+						static_cast<float>(size_box), static_cast<float>(size_box) };
 						return;
 					}
 				}

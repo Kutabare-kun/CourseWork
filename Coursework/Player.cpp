@@ -12,11 +12,13 @@
 #include "Wall.h"
 
 
+extern int size_box;
+
+
 void Player::LoadData(const Image& level)
 {
 	if (!level.data or level.height <= 0 or level.width <= 0) throw std::runtime_error{ "Image do not load!" };
 
-	constexpr int size_box{ 64 };
 	const int CountX = level.width / size_box;
 	const int CountY = level.height / size_box;
 
@@ -48,7 +50,6 @@ void Player::LoadData(const std::string& path)
 
 	if (!file) throw std::runtime_error{ "Unable to open file: " + path };
 
-	constexpr int size_box{ 64 };
 	constexpr float playerSquare{ 20 };
 
 	std::string line;
@@ -88,7 +89,6 @@ void Player::LoadData(const std::string& path)
 
 void Player::Update(const float delta)
 {
-	std::cout << "X: " << playerRect.x << "\tY: " << playerRect.y << std::endl;
 	// Reset velocity
 	velocity.x = 0;
 	velocity.y = 0;
@@ -189,8 +189,20 @@ void Player::Draw()
 	DrawRectangleRec(playerRect, BLUE);
 }
 
+void Player::SetPos(const Vector2& pos)
+{
+	playerRect.x = pos.x;
+	playerRect.y = pos.y;
+}
+
 
 void Player::SetAlive()
 {
 	alive = true;
+}
+
+
+void Player::SetAlive(bool alive)
+{
+	this->alive = alive;
 }

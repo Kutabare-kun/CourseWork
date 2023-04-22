@@ -2,10 +2,16 @@
 #include <atomic>
 #include <chrono>
 
+#include "SceneManager.h"
+#include "GameScene.h"
 #include "function.h"
+
+#include <ranges>
 
 
 using namespace std::chrono_literals;
+
+extern int size_box;
 
 // Thread Console
 //--------------------------------------------------------------------------------------
@@ -13,6 +19,11 @@ extern std::mutex mtx;
 extern std::condition_variable cv;
 extern std::atomic<bool> exit_console_game;
 extern bool predicate_cond;
+//--------------------------------------------------------------------------------------
+
+// Temp
+//--------------------------------------------------------------------------------------
+extern size_t currect_player_temp;
 //--------------------------------------------------------------------------------------
 
 
@@ -33,6 +44,21 @@ bool FindColor(const Image& level, const int& StartX, const int& StartY, const i
 }
 
 
+bool OutOfScreen(const Vector2& pos)
+{
+	if (pos.x < 0)
+		return true;
+	else if (pos.x > GetScreenWidth())
+		return true;
+	else if (pos.y < 0)
+		return true;
+	else if (pos.y > GetScreenWidth())
+		return true;
+
+	return false;
+}
+
+
 void ConsoleThread()
 {
 	std::string input;
@@ -45,14 +71,82 @@ void ConsoleThread()
 
 		if (exit_console_game)
 			break;
-
+		
 		std::cout << "Enter command: ";
 		std::getline(std::cin, input);
 
 		if (!input.empty())
 		{
-			// Process input
-			std::cout << "Received input: " << input << std::endl;
+			if (input == "help")
+			{
+				std::cout << "KillPlayer: \n";
+				std::cout << "\ttrue - player is die\n";
+				std::cout << "\ttrue - player is alive\n";
+				std::cout << "\nClear - clear console\n";
+				std::cout << "\nSizeBox - wall square\n";
+				std::cout << "\nRestart - restart all level and function\n";
+				std::cout << "\nTeleport - teleport player to mouse position\n" << std::endl;
+			}
+			else if (input.find("KillPlayer") != std::string::npos)
+			{
+				for (auto value : input | std::ranges::views::split(' ') | std::ranges::views::drop(1))
+				{
+					std::string command{ value.begin(), value.end() };
+					if (command == "true")
+						GameScene::GetPlayers()[currect_player_temp]->SetAlive(false);
+					else if (command == "false")
+						GameScene::GetPlayers()[currect_player_temp]->SetAlive(true);
+				}
+			}
+			else if (input == "Restart")
+			{
+				SceneManager::GetInstance().Restart();
+			}
+			else if (input.find("SizeBox") != std::string::npos)
+			{
+				for (auto value : input | std::ranges::views::split(' ') | std::ranges::views::drop(1))
+				{
+					bool is_digit{ true };
+					std::string command{ value.begin(), value.end() };
+					for (auto value : command)
+						if (!std::isdigit(value))
+						{
+							is_digit = false;
+							break;
+						}
+
+					if (is_digit)
+						size_box = std::stoi(command);
+					else
+					{
+						std::cout << "Incorrect command SizeBox!" << std::endl;
+						break;
+					}
+				}
+			}
+			else if (input == "Teleport")
+			{
+				Vector2 mousePos = GetMousePosition();
+				if (!OutOfScreen(mousePos))
+				{
+					// Calculate the offset considering player's width and height
+					const Rectangle& playerRect = GameScene::GetPlayers()[currect_player_temp]->GetPlayerRect();
+					Vector2 offset = { playerRect.width / 2, playerRect.height / 2 }; // Assuming player's width and height are 20
+
+					// Set the player's position with the offset
+					GameScene::GetPlayers()[currect_player_temp]->SetPos({ mousePos.x - offset.x, mousePos.y - offset.y });
+				}
+				else
+					std::cout << "Mouse out of Game Screen!" << std::endl;
+			}
+			else if (input == "Clear")
+			{
+				system("CLS");
+			}
+			else
+			{
+				std::cout << "Incorrect command!" << std::endl;
+			}
 
 			predicate_cond = false;
 		}

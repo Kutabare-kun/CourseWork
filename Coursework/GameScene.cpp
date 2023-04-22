@@ -26,8 +26,11 @@ size_t currect_player_temp = 0;
 //--------------------------------------------------------------------------------------
 
 
+std::vector<Player*> GameScene::players;
+
+
 GameScene::GameScene()
-	: players(), finish()
+	: finish()
 {}
 
 
@@ -49,11 +52,11 @@ void GameScene::Draw()
 {
 	if (finish.PlayerWon(*players[currect_player_temp]))
 	{
-		DrawText("You Win!", 200, 200, 20, GREEN);
+		DrawText("You Win!", 200, 200, 30, GREEN);
 	}
 	else if (!players[currect_player_temp]->IsAlive())
 	{
-		DrawText("You Lose!", 200, 200, 20, RED);
+		DrawText("You Lose!", 200, 200, 30, RED);
 	}
 	else
 	{
