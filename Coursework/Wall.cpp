@@ -7,7 +7,9 @@
 #include "function.h"
 
 
-std::vector<Rectangle> Wall::objects;
+Wall::Wall()
+	: objects()
+{}
 
 
 Wall& Wall::GetInstance()
@@ -145,4 +147,9 @@ void Wall::MergeCloseRectangles()
 			}
 		}
 	}
+}
+
+void Wall::Clear()
+{
+	objects.clear();
 }

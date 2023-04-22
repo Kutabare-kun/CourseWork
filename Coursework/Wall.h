@@ -6,17 +6,19 @@
 class Wall
 {
 private:
-	Wall() = default;
+	Wall();
 
-	static std::vector<Rectangle> objects;
+	std::vector<Rectangle> objects;
 
 public:
 	Wall(const Wall&) = delete;
 	Wall& operator=(const Wall&) = delete;
 
 	static Wall& GetInstance();
-	static void LoadData(const Image& level);
-	static void LoadData(const std::string& path);
-	static void MergeCloseRectangles();
-	static const std::vector<Rectangle>& get_wall() { return objects; }
+	void LoadData(const Image& level);
+	void LoadData(const std::string& path);
+	void MergeCloseRectangles();
+	void Clear();
+	const std::vector<Rectangle>& GetWall() { return objects; }
+
 };

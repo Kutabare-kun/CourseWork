@@ -15,6 +15,7 @@ Player::Player(float x, float y, float width, float height, float speed)
 
 void Player::Update(const float delta)
 {
+	std::cout << "X: " << playerRect.x << "\tY: " << playerRect.y << std::endl;
 	// Reset velocity
 	velocity.x = 0;
 	velocity.y = 0;
@@ -43,15 +44,23 @@ void Player::Update(const float delta)
 	playerRect.x += velocity.x;
 	playerRect.y += velocity.y;
 
+	// Border collision
+	// Collision is square screenWidth * screenWidth
+	if (playerRect.x < 0)
+		playerRect.x = 0;
+	if (playerRect.y < 0)
+		playerRect.y = 0;
+	if (playerRect.x + playerRect.width > GetScreenWidth())
+		playerRect.x = GetScreenWidth() - playerRect.width;
+	if (playerRect.y + playerRect.height > GetScreenWidth())
+		playerRect.y = GetScreenWidth() - playerRect.height;
+
+
 	// Perform collision detection and resolve collisions
-	auto walls = Wall::get_wall();
+	auto walls = Wall::GetInstance().GetWall();
 	for (const auto& wall : walls)
-	{
 		if (CheckCollisionRecs(playerRect, wall))
-		{
 			ResolveCollision(wall); // Separate function for collision resolution
-		}
-	}
 }
 
 
@@ -80,16 +89,19 @@ void Player::ResolveCollision(const Rectangle& wall)
 	// Resolve collision based on the axis with the smallest penetration
 	switch (minIndex)
 	{
-	case 0: // Left penetration
+	case 0: 
+		// Left penetration
 		playerRect.x -= minPenetration;
 		break;
-	case 1: // Right penetration
+	case 1: 
+		// Right penetration
 		playerRect.x += minPenetration;
 		break;
 	case 2: // Top penetration
 		playerRect.y -= minPenetration;
 		break;
-	case 3: // Bottom penetration
+	case 3: 
+		// Bottom penetration
 		playerRect.y += minPenetration;
 		break;
 	}

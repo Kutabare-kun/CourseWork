@@ -7,51 +7,43 @@
 #include <condition_variable>
 
 #include "function.h"
-#include "Player.h"
-#include "Wall.h"
+#include "SceneManager.h"
 
 
-bool predicate_cond = false;
+// Window Parameters
+//--------------------------------------------------------------------------------------
+const int screenWidth = 576;
+const int screenHeight = 624;
+//--------------------------------------------------------------------------------------
 
+// Game Path
+//--------------------------------------------------------------------------------------
 std::string path_source{
 	std::filesystem::current_path().string().erase(std::filesystem::current_path().string().find_last_of('\\'))
 };
+//--------------------------------------------------------------------------------------
 
+// Thread Console
+//--------------------------------------------------------------------------------------
+bool predicate_cond = false;
 std::mutex mtx;
 std::condition_variable cv;
-
 std::atomic<bool> exit_console_game{false};
+//--------------------------------------------------------------------------------------
 
 
 int main(void)
 {
 	// Initialization
 	//--------------------------------------------------------------------------------------
-	const int screenWidth = 576;
-	const int screenHeight = 624;
-
 	InitWindow(screenWidth, screenHeight, "Maze");
-
-	SetTargetFPS(60);
-
-	Image image_level = LoadImage((path_source + R"(\source\level.png)").c_str());
-
-	try
-	{
-		Wall::LoadData(image_level);
-		Wall::MergeCloseRectangles();
-	}
-	catch (const std::exception& ex)
-	{
-		std::cout << ex.what() << std::endl;
-	}
-
-	UnloadImage(image_level);
 
 	std::thread consoleThread(ConsoleThread);
 
-	Player player{5, 5, 20, 20, 500};
+	SceneManager::GetInstance().Init();
+	SceneManager::GetInstance().SetActiveScene(SceneUpdate::GAME);
 
+	SetTargetFPS(60);
 	//--------------------------------------------------------------------------------------
 
 	// Main game loop
@@ -59,14 +51,7 @@ int main(void)
 	{
 		// Update
 		//----------------------------------------------------------------------------------
-		if (IsKeyDown(KEY_GRAVE))
-		{
-			exit_console_game = false;
-			predicate_cond = !predicate_cond;
-			cv.notify_one();
-		}
-
-		player.Update(GetFrameTime());
+		SceneManager::GetInstance().Update(GetFrameTime());
 		//----------------------------------------------------------------------------------
 
 		// Draw
@@ -74,10 +59,7 @@ int main(void)
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
 
-		for (const auto& rectangle : Wall::get_wall())
-			DrawRectangleRec(rectangle, BLACK);
-
-		player.Draw();
+		SceneManager::GetInstance().Draw();
 
 		DrawFPS(10, 10);
 

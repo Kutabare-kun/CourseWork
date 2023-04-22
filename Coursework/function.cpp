@@ -7,11 +7,13 @@
 
 using namespace std::chrono_literals;
 
-
+// Thread Console
+//--------------------------------------------------------------------------------------
 extern std::mutex mtx;
 extern std::condition_variable cv;
 extern std::atomic<bool> exit_console_game;
 extern bool predicate_cond;
+//--------------------------------------------------------------------------------------
 
 
 bool operator==(const Color& left, const Color& right)
@@ -29,6 +31,20 @@ bool FindColor(const Image& level, const int& StartX, const int& StartY, const i
 
 	return false;
 }
+
+
+void GameCondition()
+{
+	if (false)
+	{
+		DrawText("You Win!", 200, 200, 20, GREEN);
+	}
+	else if (false)
+	{
+		DrawText("You Lose!", 200, 200, 20, RED);
+	}
+}
+
 
 
 void ConsoleThread()
