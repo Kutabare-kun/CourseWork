@@ -5,7 +5,7 @@
 #include "Scene.h"
 #include "Enums.h"
 
-class SceneManager
+class SceneManager final
 {
 private:
 	std::vector<std::unique_ptr<Scene>> scenes;
@@ -18,6 +18,7 @@ private:
 	SceneManager& operator=(const SceneManager&) = delete;
 
 	void AddScene(Scene* scene);
+
 public:
 
 	void Init();

@@ -149,7 +149,22 @@ void Wall::MergeCloseRectangles()
 	}
 }
 
+
 void Wall::Clear()
 {
 	objects.clear();
+}
+
+
+void Wall::DeleteBox(const Vector2& point)
+{
+	for (size_t i{}; i < objects.size(); ++i)
+		if (abs(objects[i].x - point.x) <= 0.01
+			&& abs(objects[i].y - point.y) <= 0.01)
+		{
+			objects.erase(objects.begin() + i);
+			break;
+		}
+
+	objects.shrink_to_fit();
 }

@@ -5,6 +5,8 @@
 
 #include "GameScene.h"
 #include "Wall.h"
+#include "PlayerFactory.h"
+
 
 // Game Path
 //--------------------------------------------------------------------------------------
@@ -18,10 +20,16 @@ extern std::atomic<bool> exit_console_game;
 extern bool predicate_cond;
 //--------------------------------------------------------------------------------------
 
+// Temp
+//--------------------------------------------------------------------------------------
+size_t currect_player_temp = 0;
+//--------------------------------------------------------------------------------------
+
 
 GameScene::GameScene()
-	: player(5, 5, 20, 20, 500)
+	: players(), finish()
 {}
+
 
 void GameScene::Update(float deltaTime)
 {
@@ -32,28 +40,49 @@ void GameScene::Update(float deltaTime)
 		cv.notify_one();
 	}
 
-	player.Update(deltaTime);
+	if (!finish.PlayerWon(*players[currect_player_temp]) and players[currect_player_temp]->IsAlive())
+		players[currect_player_temp]->Update(deltaTime);
 }
 
 
 void GameScene::Draw()
 {
-	for (const auto& rectangle : Wall::GetInstance().GetWall())
-		DrawRectangleRec(rectangle, BLACK);
+	if (finish.PlayerWon(*players[currect_player_temp]))
+	{
+		DrawText("You Win!", 200, 200, 20, GREEN);
+	}
+	else if (!players[currect_player_temp]->IsAlive())
+	{
+		DrawText("You Lose!", 200, 200, 20, RED);
+	}
+	else
+	{
+		for (const auto& rectangle : Wall::GetInstance().GetWall())
+			DrawRectangleRec(rectangle, BLACK);
 
-	DrawLine(0, GetScreenWidth(), GetScreenWidth(), GetScreenWidth(), RED);
+		DrawLine(0, GetScreenWidth(), GetScreenWidth(), GetScreenWidth(), RED);
 
-	player.Draw();
+		players[currect_player_temp]->Draw();
+
+		finish.Draw();
+	}
 }
 
 
 void GameScene::onActivate()
 {
+	factory = new PlayerFactory;
+
+	players.push_back(factory->CreatePlayer());
+
 	Image image_level = LoadImage((path_source + R"(\source\level.png)").c_str());
 
 	try
 	{
 		Wall::GetInstance().LoadData(image_level);
+		players[currect_player_temp]->LoadData(image_level);
+		players[currect_player_temp]->SetAlive();
+		finish.LoadData(image_level);
 		Wall::GetInstance().MergeCloseRectangles();
 	}
 	catch (const std::exception& ex)
@@ -67,5 +96,7 @@ void GameScene::onActivate()
 
 void GameScene::onDeactivate()
 {
+	delete factory;
+	players.clear();
 	Wall::GetInstance().Clear();
 }

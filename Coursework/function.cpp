@@ -33,20 +33,6 @@ bool FindColor(const Image& level, const int& StartX, const int& StartY, const i
 }
 
 
-void GameCondition()
-{
-	if (false)
-	{
-		DrawText("You Win!", 200, 200, 20, GREEN);
-	}
-	else if (false)
-	{
-		DrawText("You Lose!", 200, 200, 20, RED);
-	}
-}
-
-
-
 void ConsoleThread()
 {
 	std::string input;

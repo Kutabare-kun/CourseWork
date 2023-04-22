@@ -1,13 +1,17 @@
 #pragma once
-#include "Scene.h"
-#include "Player.h"
+#include <vector>
 
+#include "Scene.h"
+#include "Finish.h"
 
 class Player;
+class PlayerFactory;
 
 class GameScene : public Scene
 {
-    Player player;
+    std::vector<Player*> players;
+    Finish finish;
+    PlayerFactory* factory;
 
 public:
     GameScene();

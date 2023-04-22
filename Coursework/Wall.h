@@ -19,6 +19,7 @@ public:
 	void LoadData(const std::string& path);
 	void MergeCloseRectangles();
 	void Clear();
+	void DeleteBox(const Vector2& point);
 	const std::vector<Rectangle>& GetWall() { return objects; }
 
 };

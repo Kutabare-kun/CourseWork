@@ -43,7 +43,7 @@ int main(void)
 	SceneManager::GetInstance().Init();
 	SceneManager::GetInstance().SetActiveScene(SceneUpdate::GAME);
 
-	SetTargetFPS(60);
+	SetTargetFPS(144);
 	//--------------------------------------------------------------------------------------
 
 	// Main game loop
@@ -51,6 +51,7 @@ int main(void)
 	{
 		// Update
 		//----------------------------------------------------------------------------------
+
 		SceneManager::GetInstance().Update(GetFrameTime());
 		//----------------------------------------------------------------------------------
 
