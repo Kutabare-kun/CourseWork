@@ -23,6 +23,11 @@ Vector2 Grid::WorldToGrid(float x, float y) const
     return Vector2{ std::floor(static_cast<float>(x / cellSize)), std::floor(static_cast<float>(y / cellSize)) };
 }
 
+void Grid::Clear()
+{
+    walkable.clear();
+}
+
 
 bool Grid::IsWalkable(int x, int y) const
 {
@@ -47,14 +52,5 @@ void Grid::UpdateWalkableWithWalls(const std::vector<Rectangle>& walls)
     {
         Vector2 wallPos = WorldToGrid(wall.x, wall.y);
     	SetWalkable(wallPos.x, wallPos.y, false);
-    }
-
-    for (auto element : walkable)
-    {
-	    for (auto vb_reference : element)
-	    {
-            std::cout << vb_reference;
-	    }
-        std::cout << std::endl;
     }
 }

@@ -85,7 +85,10 @@ void ConsoleThread()
 				std::cout << "\nClear - clear console\n";
 				std::cout << "\nSizeBox - wall square\n";
 				std::cout << "\nRestart - restart all level and function\n";
-				std::cout << "\nTeleport - teleport player to mouse position\n" << std::endl;
+				std::cout << "\nTeleport - teleport player to mouse position\n";
+				std::cout << "\nSet Aggression - distance between enemy and player when enemy start aggression\n";
+				std::cout << "\nKillEnemy: \n";
+				std::cout << "\tAll - kill all enemies\n" << std::endl;
 			}
 			else if (input.find("KillPlayer") != std::string::npos)
 			{
@@ -100,6 +103,8 @@ void ConsoleThread()
 			}
 			else if (input == "Restart")
 			{
+				std::unique_lock<std::mutex> lock(GameScene::GameScene_mutex);
+				GameScene::GameScene_cv.wait(lock, [] { return GameScene::T_IsProtectedGameScene(); });
 				SceneManager::GetInstance().Restart();
 			}
 			else if (input.find("SizeBox") != std::string::npos)
@@ -108,8 +113,8 @@ void ConsoleThread()
 				{
 					bool is_digit{ true };
 					std::string command{ value.begin(), value.end() };
-					for (auto value : command)
-						if (!std::isdigit(value))
+					for (const auto& symbol : command)
+						if (!std::isdigit(symbol))
 						{
 							is_digit = false;
 							break;
@@ -138,6 +143,42 @@ void ConsoleThread()
 				}
 				else
 					std::cout << "Mouse out of Game Screen!" << std::endl;
+			}
+			else if (input.find("Set Aggression") != std::string::npos)
+			{
+				std::unique_lock<std::mutex> lock(GameScene::GameScene_mutex);
+				GameScene::GameScene_cv.wait(lock, [] { return GameScene::T_IsProtectedGameScene(); });
+				for (const auto& count : input | std::ranges::views::split(' ') | std::ranges::views::drop(2))
+				{
+					bool is_digit{ true };
+					std::string command{ count.begin(), count.end() };
+					for (const auto& value : command)
+						if (!std::isdigit(value))
+						{
+							is_digit = false;
+							break;
+						}
+
+					if (is_digit)
+						for (auto& enemy : GameScene::GetEnemies())
+							enemy.SetAggression(std::stoi(command));
+					else
+					{
+						std::cout << "Incorrect command Set Aggression!" << std::endl;
+						break;
+					}
+				}
+			}
+			else if (input.find("KillEnemy") != std::string::npos)
+			{
+				std::unique_lock<std::mutex> lock(GameScene::GameScene_mutex);
+				GameScene::GameScene_cv.wait(lock, [] { return GameScene::T_IsProtectedGameScene(); });
+				for (auto value : input | std::ranges::views::split(' ') | std::ranges::views::drop(1))
+				{
+					std::string command{ value.begin(), value.end() };
+					if (command == "All")
+						GameScene::GetEnemies().clear();
+				}
 			}
 			else if (input == "Clear")
 			{

@@ -3,11 +3,13 @@
 #include <unordered_set>
 #include "Pathfinding.h"
 
+
 struct Vector2Hash {
     std::size_t operator()(const Vector2& v) const {
         return std::hash<float>()(v.x) ^ (std::hash<float>()(v.y) << 1);
     }
 };
+
 
 struct Vector2Equal {
     bool operator()(const Vector2& lhs, const Vector2& rhs) const {
@@ -15,9 +17,11 @@ struct Vector2Equal {
     }
 };
 
+
 float Pathfinding::Heuristic(const Vector2& a, const Vector2& b) {
     return std::abs(a.x - b.x) + std::abs(a.y - b.y);
 }
+
 
 std::vector<Vector2> Pathfinding::FindPath(const Grid& grid, const Vector2& start, const Vector2& end) {
     using Node = std::pair<Vector2, float>;
@@ -44,6 +48,7 @@ std::vector<Vector2> Pathfinding::FindPath(const Grid& grid, const Vector2& star
                 path.push_back(grid.GridToWorld(currentNode.x, currentNode.y));
                 currentNode = cameFrom[currentNode];
             }
+
             std::reverse(path.begin(), path.end());
             return path;
         }

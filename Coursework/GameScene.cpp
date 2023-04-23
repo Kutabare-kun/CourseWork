@@ -8,6 +8,7 @@
 #include "PlayerFactory.h"
 
 
+
 // Game Path
 //--------------------------------------------------------------------------------------
 extern std::string path_source;
@@ -32,8 +33,18 @@ size_t currect_player_temp = 0;
 //--------------------------------------------------------------------------------------
 
 
+// Initialization GameScene
+//--------------------------------------------------------------------------------------
+// Players and Enemies
+//--------------------------------------------------------------------------------------
 std::vector<Player*> GameScene::players;
 std::vector<Enemy> GameScene::enemies;
+// Thread
+//--------------------------------------------------------------------------------------
+bool GameScene::protected_thread{ false };
+std::mutex GameScene::GameScene_mutex;
+std::condition_variable GameScene::GameScene_cv;
+//--------------------------------------------------------------------------------------
 
 
 GameScene::GameScene()
@@ -50,28 +61,38 @@ void GameScene::Update(float deltaTime)
 		cv.notify_one();
 	}
 
+	// Protect Thread
+	//--------------------------------------------------------------------------------------
+	protected_thread = false;
+	std::unique_lock<std::mutex> lock(GameScene_mutex);
+
 	if (!finish.PlayerWon(*players[currect_player_temp]) and players[currect_player_temp]->IsAlive())
 		players[currect_player_temp]->Update(deltaTime);
 
 	Rectangle posPlayer = players[currect_player_temp]->GetPlayerRect();
 	for (auto& enemy : enemies)
-		enemy.SetTarget({ std::ceil(posPlayer.x + posPlayer.width / 2), std::ceil(posPlayer.y + posPlayer.height / 2) });
+		enemy.SetTarget(posPlayer);
 
-	for (auto & enemy : enemies)
+	for (auto& enemy : enemies)
 		enemy.Update(deltaTime);
+	//--------------------------------------------------------------------------------------
 }
 
 
 void GameScene::Draw()
 {
+	// Protect Thread
+	//--------------------------------------------------------------------------------------
+	std::unique_lock<std::mutex> lock(GameScene_mutex);
+
 	if (finish.PlayerWon(*players[currect_player_temp]))
 	{
 		DrawText("You Win!", 200, 200, 30, GREEN);
 	}
-	//else if (!players[currect_player_temp]->IsAlive())
-	//{
-	//	DrawText("You Lose!", 200, 200, 30, RED);
-	//}
+	else if (!players[currect_player_temp]->IsAlive())
+	{
+		DrawText("You Lose!", 200, 200, 30, RED);
+	}
 	else
 	{
 		for (const auto& rectangle : Wall::GetInstance().GetWall())
@@ -79,13 +100,20 @@ void GameScene::Draw()
 
 		DrawLine(0, GetScreenWidth(), GetScreenWidth(), GetScreenWidth(), RED);
 
-		players[currect_player_temp]->Draw();
-
 		finish.Draw();
+
+		for (const auto& player : players)
+			player->Draw();
 
 		for (const auto & enemy : enemies)
 			enemy.Draw();
 	}
+	//--------------------------------------------------------------------------------------
+
+	protected_thread = true;
+	lock.unlock();
+
+	GameScene_cv.notify_all();
 }
 
 
@@ -108,7 +136,7 @@ void GameScene::onActivate()
 		for (const auto& source : Enemy::LoadData(image_level))
 		{
 			Enemy enemy;
-			enemy.Init(source, &grid, 300);
+			enemy.Init(source, &grid, 300, 5);
 			enemies.push_back(enemy);
 		}
 
@@ -133,5 +161,12 @@ void GameScene::onDeactivate()
 	delete factory;
 	players.clear();
 	enemies.clear();
+	grid.Clear();
 	Wall::GetInstance().Clear();
+}
+
+
+bool GameScene::T_IsProtectedGameScene()
+{
+	return protected_thread;
 }

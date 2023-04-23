@@ -11,70 +11,98 @@
 extern int size_box;
 
 
-void Enemy::Init(float x, float y, float width, float height, Grid* grid, float speed)
+void Enemy::Init(float x, float y, float width, float height, Grid* grid, float speed, size_t distance)
 {
     enemyRect = { x, y, width, height };
     this->grid = grid;
     this->speed = speed;
-    initialPosition = { x, y };
+    initialPosition = { x + enemyRect.width / 2, y + enemyRect.height / 2 };
+    pathDistance = distance;
 }
 
 
-void Enemy::Init(Rectangle rec, Grid* grid, float speed)
+void Enemy::Init(Rectangle rec, Grid* grid, float speed, size_t distance)
 {
     enemyRect = rec;
     this->grid = grid;
     this->speed = speed;
-    initialPosition = { rec.x, rec.y };
+    initialPosition = { rec.x + enemyRect.width / 2, rec.y + enemyRect.height / 2 };
+    pathDistance = distance;
 }
 
 
-void Enemy::SetTarget(const Vector2& target)
+void Enemy::SetTarget(const Rectangle& target)
 {
-    targetPosition = target;
+    targetRect = target;
+    targetPosition = {target.x + target.width / 2, target.y + target.height / 2};
     UpdatePath();
+    if (path.size() > pathDistance)
+    {
+        targetRect = { initialPosition.x - enemyRect.width / 2, initialPosition.y - enemyRect.height / 2, enemyRect.width, enemyRect.height };
+        targetPosition = initialPosition;
+        UpdatePath();
+    }
 }
 
 
 void Enemy::Update(float delta)
 {
-    if (ReachedTarget())
-        return;
-
-    if (path.empty())
+    if (path.size() <= pathDistance         
+        || (targetPosition.x == initialPosition.x && targetPosition.y == initialPosition.y))
     {
-        UpdatePath();
-        if (path.empty())
+        if (ReachedTarget())
             return;
-    }
 
-    Vector2 direction = Vector2Subtract(path.front(), Vector2{ enemyRect.x, enemyRect.y });
-    float distance = Vector2Length(direction);
+        if (path.size() > 1)
+        {
+            if (path.empty())
+            {
+                UpdatePath();
+                if (path.empty())
+                    return;
+            }
 
-    if (distance < speed * delta)
-    {
-        enemyRect.x = path.front().x;
-        enemyRect.y = path.front().y;
-        path.erase(path.begin());
-    }
-    else
-    {
-        Vector2 normalizedDirection = Vector2Normalize(direction);
-        enemyRect.x += normalizedDirection.x * speed * delta;
-        enemyRect.y += normalizedDirection.y * speed * delta;
+            Vector2 direction = Vector2Subtract(path.front(), Vector2{ enemyRect.x, enemyRect.y });
+            float distance = Vector2Length(direction);
+
+            if (distance < speed * delta)
+            {
+                enemyRect.x = path.front().x;
+                enemyRect.y = path.front().y;
+                path.erase(path.begin());
+            }
+            else
+            {
+                Vector2 normalizedDirection = Vector2Normalize(direction);
+                enemyRect.x += normalizedDirection.x * speed * delta;
+                enemyRect.y += normalizedDirection.y * speed * delta;
+            }
+        }
+        else
+        {
+            Vector2 direction = Vector2Subtract(targetPosition, Vector2{ enemyRect.x + enemyRect.width / 2.0f, enemyRect.y + enemyRect.height / 2.0f });
+            Vector2 normalizedDirection = Vector2Normalize(direction);
+            enemyRect.x += normalizedDirection.x * speed * delta;
+            enemyRect.y += normalizedDirection.y * speed * delta;
+        }
     }
 }
 
 
 void Enemy::Draw() const
 {
+#ifdef DebugFindPathEnemy
+    for (const auto& vector2 : path)
+        DrawRectangleV(vector2, { static_cast<float>(size_box), static_cast<float>(size_box) }, LIME);
+#endif
+
     DrawRectangleRec(enemyRect, RED);
 }
 
 
 bool Enemy::ReachedTarget() const
 {
-    return enemyRect.x == targetPosition.x && enemyRect.y == targetPosition.y;
+	return CheckCollisionRecs(enemyRect, targetRect);
 }
 
 
@@ -83,6 +111,11 @@ void Enemy::UpdatePath()
     Vector2 start = grid->WorldToGrid(enemyRect.x + enemyRect.width / 2.0f, enemyRect.y + enemyRect.height / 2.0f);
     Vector2 end = grid->WorldToGrid(targetPosition.x, targetPosition.y);
     path = Pathfinding::FindPath(*grid, start, end);
+}
+
+void Enemy::SetAggression(const size_t& distance)
+{
+    pathDistance = distance;
 }
 
 

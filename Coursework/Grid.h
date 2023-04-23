@@ -12,6 +12,8 @@ public:
     Vector2 GridToWorld(int x, int y) const;
     Vector2 WorldToGrid(float x, float y) const;
 
+    void Clear();
+
     bool IsWalkable(int x, int y) const;
     void SetWalkable(int x, int y, bool walkable);
 

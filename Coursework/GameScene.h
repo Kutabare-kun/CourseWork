@@ -1,11 +1,12 @@
 #pragma once
 #include <vector>
+#include <mutex>
+#include <condition_variable>
 
 #include "Scene.h"
 #include "Finish.h"
 #include "Enemy.h"
 #include "Grid.h"
-#include "Pathfinding.h"
 
 
 class Player;
@@ -19,6 +20,8 @@ class GameScene : public Scene
     static std::vector<Enemy> enemies;
     Grid grid;
 
+    static bool protected_thread;
+
 public:
     GameScene();
 
@@ -28,5 +31,11 @@ public:
     void onDeactivate() override;
 
     static std::vector<Player*>& GetPlayers() { return players; }
-    static std::vector<Enemy> GetEnemies() { return enemies; }
+    static std::vector<Enemy>& GetEnemies() { return enemies; }
+
+    // T - Thread
+    static bool T_IsProtectedGameScene();
+
+    static std::mutex GameScene_mutex;
+    static std::condition_variable GameScene_cv;
 };
