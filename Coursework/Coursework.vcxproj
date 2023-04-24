@@ -131,6 +131,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="ButtonFactory.cpp" />
     <ClCompile Include="Coursework.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Finish.cpp" />
@@ -142,9 +144,13 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerFactory.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SelectLevelScene.cpp" />
+    <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="ButtonFactory.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Finish.h" />
@@ -157,6 +163,8 @@
     <ClInclude Include="PlayerFactory.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SelectLevelScene.h" />
+    <ClInclude Include="TextBox.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

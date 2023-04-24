@@ -1,9 +1,16 @@
 #pragma once
+#include <vector>
+
 #include "Scene.h"
+#include "ButtonFactory.h"
 
 class MainMenuScene :
     public Scene
 {
+private:
+    ButtonFactory* buttonFactory;
+    std::vector<Button*> buttons;
+
 public:
     MainMenuScene() = default;
 

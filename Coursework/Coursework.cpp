@@ -22,6 +22,10 @@ const int screenHeight = 624;
 int size_box{ 32 };
 //--------------------------------------------------------------------------------------
 
+// Size Box
+//--------------------------------------------------------------------------------------
+bool GameExit{ false };
+//--------------------------------------------------------------------------------------
 
 // Game Path
 //--------------------------------------------------------------------------------------
@@ -48,13 +52,13 @@ int main(void)
 	std::thread consoleThread(ConsoleThread);
 
 	SceneManager::GetInstance().Init();
-	SceneManager::GetInstance().SetActiveScene(SceneUpdate::GAME);
+	SceneManager::GetInstance().SetActiveScene(SceneUpdate::MAIN);
 
 	SetTargetFPS(144);
 	//--------------------------------------------------------------------------------------
 
 	// Main game loop
-	while (!WindowShouldClose())
+	while (!WindowShouldClose() && !GameExit)
 	{
 		// Update
 		//----------------------------------------------------------------------------------

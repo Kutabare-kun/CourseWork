@@ -7,6 +7,7 @@
 #include "Finish.h"
 #include "Enemy.h"
 #include "Grid.h"
+#include "ButtonFactory.h"
 
 
 class Player;
@@ -15,10 +16,20 @@ class PlayerFactory;
 class GameScene : public Scene
 {
     Finish finish;
-    PlayerFactory* factory;
-    static std::vector<Player*> players;
-    static std::vector<Enemy> enemies;
     Grid grid;
+
+    PlayerFactory* playerFactory;
+    static Player* player;
+
+    ButtonFactory* buttonFactory;
+    std::vector<Button*> buttons;
+    size_t buttonExit;
+
+    static std::vector<Enemy> enemies;
+
+    float backToHome;
+    float respawnPlayer;
+    float timer;
 
     static bool protected_thread;
 
@@ -30,7 +41,7 @@ public:
     void onActivate() override;
     void onDeactivate() override;
 
-    static std::vector<Player*>& GetPlayers() { return players; }
+    static Player* GetPlayer() { return player; }
     static std::vector<Enemy>& GetEnemies() { return enemies; }
 
     // T - Thread

@@ -3,5 +3,7 @@
 enum class SceneUpdate
 {
 	MAIN,
+	SELECTLEVEL,
 	GAME,
+	NONE
 };

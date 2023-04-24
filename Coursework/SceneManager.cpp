@@ -1,6 +1,8 @@
 #include "SceneManager.h"
 #include "GameScene.h"
 #include "MainMenuScene.h"
+#include "SelectLevelScene.h"
+
 
 SceneManager::SceneManager() : scenes(), current_scene(0)
 {}
@@ -15,6 +17,7 @@ SceneManager& SceneManager::GetInstance()
 void SceneManager::Init()
 {
 	AddScene(new MainMenuScene);
+	AddScene(new SelectLevelScene);
 	AddScene(new GameScene);
 }
 

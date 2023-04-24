@@ -96,9 +96,9 @@ void ConsoleThread()
 				{
 					std::string command{ value.begin(), value.end() };
 					if (command == "true")
-						GameScene::GetPlayers()[currect_player_temp]->SetAlive(false);
+						GameScene::GetPlayer()->SetAlive(false);
 					else if (command == "false")
-						GameScene::GetPlayers()[currect_player_temp]->SetAlive(true);
+						GameScene::GetPlayer()->SetAlive(true);
 				}
 			}
 			else if (input == "Restart")
@@ -135,11 +135,11 @@ void ConsoleThread()
 				if (!OutOfScreen(mousePos))
 				{
 					// Calculate the offset considering player's width and height
-					const Rectangle& playerRect = GameScene::GetPlayers()[currect_player_temp]->GetPlayerRect();
+					const Rectangle& playerRect = GameScene::GetPlayer()->GetPlayerRect();
 					Vector2 offset = { playerRect.width / 2, playerRect.height / 2 }; // Assuming player's width and height are 20
 
 					// Set the player's position with the offset
-					GameScene::GetPlayers()[currect_player_temp]->SetPos({ mousePos.x - offset.x, mousePos.y - offset.y });
+					GameScene::GetPlayer()->SetPos({ mousePos.x - offset.x, mousePos.y - offset.y });
 				}
 				else
 					std::cout << "Mouse out of Game Screen!" << std::endl;

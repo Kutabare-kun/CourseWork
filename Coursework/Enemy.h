@@ -33,6 +33,7 @@ public:
 
     void SetTarget(const Rectangle& target);
     void SetAggression(const size_t& distance);
+    const Rectangle& GetEnemyRect() const { return enemyRect; }
 
     void Update(float delta);
     void Draw() const;
