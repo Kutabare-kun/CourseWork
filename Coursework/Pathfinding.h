@@ -1,6 +1,4 @@
 #pragma once
-#include <raylib.h>
-#include <vector>
 #include "Grid.h"
 
 class Pathfinding

@@ -1,5 +1,4 @@
 #include "TextBox.h"
-#include "raylib.h"
 
 
 TextBox::TextBox(const Rectangle& rect, const std::string& text, int fontSize, Color textColor)

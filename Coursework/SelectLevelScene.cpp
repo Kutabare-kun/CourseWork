@@ -51,7 +51,7 @@ void SelectLevelScene::onActivate()
 {
 	levelName.emplace_back("level.png", "Easy");
 	levelName.emplace_back("level_1.png", "Medium");
-	//levelName.emplace_back("level_2.png", "Hard");
+	levelName.emplace_back("level_2.png", "Hard");
 
 	Image image = LoadImage((pathToLevel = (path_source + "\\source\\" + levelName.at(index).first)).c_str());
 	ImageResize(&image, 400, 400);

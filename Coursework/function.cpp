@@ -1,12 +1,9 @@
 #include <iostream>
-#include <atomic>
-#include <chrono>
+#include <ranges>
 
 #include "SceneManager.h"
 #include "GameScene.h"
 #include "function.h"
-
-#include <ranges>
 
 
 using namespace std::chrono_literals;

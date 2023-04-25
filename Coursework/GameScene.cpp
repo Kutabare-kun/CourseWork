@@ -81,6 +81,9 @@ void GameScene::Update(float deltaTime)
 				enemy.SetTarget(posPlayer);
 				enemy.Update(deltaTime);
 				player->SetAlive(!CheckCollisionRecs(player->GetPlayerRect(), enemy.GetEnemyRect()));
+
+				if (!player->IsAlive())
+					break;
 			}
 
 			// Reset timer

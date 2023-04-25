@@ -1,9 +1,5 @@
 #pragma once
-
-#include <vector>
-#include <raylib.h>
 #include "Grid.h"
-#include "Pathfinding.h"
 
 
 // Enemy Debug

@@ -1,9 +1,9 @@
 #include "Enemy.h"
 
-#include <iostream>
 #include <raymath.h>
 #include <stdexcept>
 
+#include "Pathfinding.h"
 #include "function.h"
 #include "Wall.h"
 

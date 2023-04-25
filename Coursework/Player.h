@@ -1,7 +1,5 @@
 #pragma once
 #include <raylib.h>
-#include <string>
-
 
 class Player
 {
@@ -18,7 +16,6 @@ public:
 	Player() = default;
 
 	void LoadData(const Image& level);
-	void LoadData(const std::string& path);
 
 	void Update(float delta);
 	void Draw();
