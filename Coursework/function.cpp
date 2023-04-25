@@ -70,7 +70,7 @@ void ConsoleThread()
 		cv.wait(ulm, ConsoleOpen);
 
 		if (exit_console_game)
-			break;
+			return;
 		
 		std::cout << "Enter command: ";
 		std::getline(std::cin, input);

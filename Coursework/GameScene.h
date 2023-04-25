@@ -15,6 +15,8 @@ class PlayerFactory;
 
 class GameScene : public Scene
 {
+    std::thread consoleThread;
+
     Finish finish;
     Grid grid;
 
@@ -23,6 +25,7 @@ class GameScene : public Scene
 
     ButtonFactory* buttonFactory;
     std::vector<Button*> buttons;
+    std::vector<Button*> activeButtons;
     size_t buttonExit;
 
     static std::vector<Enemy> enemies;
@@ -30,6 +33,8 @@ class GameScene : public Scene
     float backToHome;
     float respawnPlayer;
     float timer;
+
+    bool gamePause;
 
     static bool protected_thread;
 

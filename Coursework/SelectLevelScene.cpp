@@ -1,8 +1,5 @@
 #include "SelectLevelScene.h"
 
-#include <iostream>
-
-
 extern std::string path_source;
 std::string SelectLevelScene::pathToLevel;
 

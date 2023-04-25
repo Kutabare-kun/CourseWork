@@ -1,11 +1,6 @@
 #include <iostream>
 #include <filesystem>
 #include <string>
-#include <thread>
-#include <atomic>
-#include <mutex>
-#include <condition_variable>
-
 
 #include "function.h"
 #include "SceneManager.h"
@@ -34,22 +29,12 @@ std::string path_source{
 };
 //--------------------------------------------------------------------------------------
 
-// Thread Console
-//--------------------------------------------------------------------------------------
-bool predicate_cond = false;
-std::mutex mtx;
-std::condition_variable cv;
-std::atomic<bool> exit_console_game{false};
-//--------------------------------------------------------------------------------------
-
 
 int main(void)
 {
 	// Initialization
 	//--------------------------------------------------------------------------------------
 	InitWindow(screenWidth, screenHeight, "Maze");
-
-	std::thread consoleThread(ConsoleThread);
 
 	SceneManager::GetInstance().Init();
 	SceneManager::GetInstance().SetActiveScene(SceneUpdate::MAIN);
@@ -73,20 +58,9 @@ int main(void)
 
 		SceneManager::GetInstance().Draw();
 
-		DrawFPS(10, 10);
-
 		EndDrawing();
 		//----------------------------------------------------------------------------------
 	}
-
-	// Turn off thread
-	//--------------------------------------------------------------------------------------
-	exit_console_game = true;
-	predicate_cond = true;
-	cv.notify_one();
-	consoleThread.join();
-	//--------------------------------------------------------------------------------------
-
 
 	// De-Initialization
 	//--------------------------------------------------------------------------------------
