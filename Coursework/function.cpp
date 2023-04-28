@@ -63,8 +63,8 @@ void ConsoleThread()
 	while (!exit_console_game)
 	{
 		std::unique_lock<std::mutex> ulm{mtx};
-		std::cin.clear();
 		cv.wait(ulm, ConsoleOpen);
+		std::cin.clear();
 
 		if (exit_console_game)
 			return;
@@ -81,7 +81,6 @@ void ConsoleThread()
 				std::cout << "\ttrue - player is alive\n";
 				std::cout << "\nClear - clear console\n";
 				std::cout << "\nSizeBox - wall square\n";
-				std::cout << "\nRestart - restart all level and function\n";
 				std::cout << "\nTeleport - teleport player to mouse position\n";
 				std::cout << "\nSet Aggression - distance between enemy and player when enemy start aggression\n";
 				std::cout << "\nKillEnemy: \n";
@@ -97,12 +96,6 @@ void ConsoleThread()
 					else if (command == "false")
 						GameScene::GetPlayer()->SetAlive(true);
 				}
-			}
-			else if (input == "Restart")
-			{
-				std::unique_lock<std::mutex> lock(GameScene::GameScene_mutex);
-				GameScene::GameScene_cv.wait(lock, [] { return GameScene::T_IsProtectedGameScene(); });
-				SceneManager::GetInstance().Restart();
 			}
 			else if (input.find("SizeBox") != std::string::npos)
 			{
@@ -131,11 +124,9 @@ void ConsoleThread()
 				Vector2 mousePos = GetMousePosition();
 				if (!OutOfScreen(mousePos))
 				{
-					// Calculate the offset considering player's width and height
 					const Rectangle& playerRect = GameScene::GetPlayer()->GetPlayerRect();
-					Vector2 offset = { playerRect.width / 2, playerRect.height / 2 }; // Assuming player's width and height are 20
+					Vector2 offset = { playerRect.width / 2, playerRect.height / 2 };
 
-					// Set the player's position with the offset
 					GameScene::GetPlayer()->SetPos({ mousePos.x - offset.x, mousePos.y - offset.y });
 				}
 				else
@@ -178,13 +169,9 @@ void ConsoleThread()
 				}
 			}
 			else if (input == "Clear")
-			{
 				system("CLS");
-			}
 			else
-			{
 				std::cout << "Incorrect command!" << std::endl;
-			}
 
 			predicate_cond = false;
 		}

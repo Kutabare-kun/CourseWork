@@ -113,6 +113,7 @@ void Enemy::UpdatePath()
     path = Pathfinding::FindPath(*grid, start, end);
 }
 
+
 void Enemy::SetAggression(const size_t& distance)
 {
     pathDistance = distance;

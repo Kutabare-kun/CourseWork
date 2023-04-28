@@ -23,6 +23,7 @@ Vector2 Grid::WorldToGrid(float x, float y) const
     return Vector2{ std::floor(static_cast<float>(x / cellSize)), std::floor(static_cast<float>(y / cellSize)) };
 }
 
+
 void Grid::Clear()
 {
     walkable.clear();
