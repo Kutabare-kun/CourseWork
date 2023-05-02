@@ -28,12 +28,20 @@ void MainMenuScene::onActivate()
 	float CenterX = GetScreenWidth() / 2;
 	float CenterY = GetScreenHeight() / 2;
 	float width = 200;
+	float DistanceY = 100;
 
 	// Start
 	buttons.push_back(buttonFactory->CreateButton(
 		SceneUpdate::SELECTLEVEL,
-		{ CenterX - width / 2, CenterY - 50, width, 50 },
+		{ CenterX - width / 2, CenterY - DistanceY, width, 50 },
 		"START", 20, Color{0, 49, 48, 255}, 
+		Color{ 0, 149, 146, 255 }, Color{ 0, 49, 48, 50 }
+	));
+
+	buttons.push_back(buttonFactory->CreateButton(
+		SceneUpdate::BUILDLEVEL,
+		{ CenterX - width / 2, CenterY, width, 50 },
+		"BUILD", 20, Color{ 0, 49, 48, 255 },
 		Color{ 0, 149, 146, 255 }, Color{ 0, 49, 48, 50 }
 	));
 
@@ -42,7 +50,7 @@ void MainMenuScene::onActivate()
 		{
 			GameExit = true;
 		},
-		{ CenterX - width / 2, CenterY + 50, width, 50 },
+		{ CenterX - width / 2, CenterY + DistanceY, width, 50 },
 		"EXIT", 20, Color{ 0, 49, 48, 255 },
 		Color{ 0, 149, 146, 255 }, Color{ 0, 49, 48, 50 }
 	));

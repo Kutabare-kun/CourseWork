@@ -256,11 +256,6 @@ void GameScene::onActivate()
 	);
 	//--------------------------------------------------------------------------------------
 
-	// Init Game Area to grid
-	//--------------------------------------------------------------------------------------
-	grid.Init(GetScreenWidth() / size_box, GetScreenWidth() / size_box, size_box);
-	//--------------------------------------------------------------------------------------
-
 	// Init Players, enemies and walls locations
 	//--------------------------------------------------------------------------------------
 	playerFactory = new PlayerFactory;
@@ -268,6 +263,11 @@ void GameScene::onActivate()
 	player = playerFactory->CreatePlayer();
 
 	Image image_level = LoadImage(SelectLevelScene::GetLevel().c_str());
+
+	// Init Game Area to grid
+	//--------------------------------------------------------------------------------------
+	grid.Init(image_level.width / size_box, image_level.height / size_box, size_box);
+	//--------------------------------------------------------------------------------------
 
 	try
 	{

@@ -17,6 +17,8 @@ public:
     bool IsWalkable(int x, int y) const;
     void SetWalkable(int x, int y, bool walkable);
 
+    const std::vector<std::vector<bool>>& GetGrid() const { return walkable; }
+
     void UpdateWalkableWithWalls(const std::vector<Rectangle>& walls);
 
 private:

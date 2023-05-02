@@ -63,11 +63,14 @@
     <ClCompile Include="SelectLevelScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UnitTesting.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BuildLevelScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="function.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Wall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -79,9 +82,6 @@
     </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Enums.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="MainMenuScene.h">
       <Filter>Header Files</Filter>
@@ -114,6 +114,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SelectLevelScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="function.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitTesting.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildLevelScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
