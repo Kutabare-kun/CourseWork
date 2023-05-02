@@ -63,8 +63,6 @@ int main(void)
 
 		SceneManager::GetInstance().Draw();
 
-		DrawFPS(10, 10);
-
 		EndDrawing();
 		//----------------------------------------------------------------------------------
 	}
