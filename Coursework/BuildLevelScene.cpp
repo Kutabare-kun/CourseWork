@@ -1,11 +1,18 @@
 #include "BuildLevelScene.h"
 
 #include <iostream>
+#include <string>
+#include <filesystem>
 
 
 // Global variables
 //--------------------------------------------------------------------------------------
 extern int size_box;
+//--------------------------------------------------------------------------------------
+
+// Game Path
+//--------------------------------------------------------------------------------------
+extern std::string path_source;
 //--------------------------------------------------------------------------------------
 
 
@@ -54,11 +61,45 @@ void BuildLevelScene::Update(float deltaTime)
                 }
 
                 path.clear();
+
+                if (Save)
+                {
+	                Save = false;
+	                DelayToScreenshot = 0.f;
+                }
             }
         }
     }
     else if (Flag & static_cast<int>(PaintFlag::P_WATCH))
         path = Pathfinding::FindPath(grid, { FromTo.first.y, FromTo.first.x }, { FromTo.second.y, FromTo.second.x });
+
+    if (Save && Timer == 0.f && !path.empty())
+    {
+        std::cout << "Enter File Name: ";
+        std::cin.clear();
+        std::getline(std::cin, fileName);
+        fileName += ".png";
+        Timer += deltaTime;
+        Save = false;
+
+        path.clear();
+    }
+    else if (Timer > 0.f && Timer < DelayToScreenshot)
+        Timer += deltaTime;
+    else if (Timer >= DelayToScreenshot)
+    {
+        Timer = 0.f;
+        TakeScreenshot(fileName.c_str());
+
+        std::filesystem::rename(std::filesystem::current_path() / fileName, std::filesystem::path(path_source) / "source" / fileName);
+
+        fileName.clear();
+    }
+    else if (Save && path.empty())
+    {
+        Save = !Save;
+        std::cout << "Couldn't find the successful path" << std::endl;
+    }
 
     for (auto& button : buttons)
         button->Update();
@@ -69,23 +110,26 @@ void BuildLevelScene::Draw()
 {
     const auto& wall = grid.GetGrid();
 
-    DrawRectangle(FromTo.first.x * size_box, FromTo.first.y * size_box, size_box, size_box, ORANGE);
-    DrawRectangle(FromTo.second.x * size_box, FromTo.second.y * size_box, size_box, size_box, RED);
+    DrawRectangle(FromTo.first.x * size_box, FromTo.first.y * size_box, size_box, size_box, BLUE);
+    DrawRectangle(FromTo.second.x * size_box, FromTo.second.y * size_box, size_box, size_box, ORANGE);
 
     int screenWidth = GetScreenWidth();
     int screenHeight = GetScreenHeight();
 
     if (!path.empty())
         for (const auto& vector2 : path)
-            DrawRectangleV({vector2.y, vector2.x}, { static_cast<float>(size_box), static_cast<float>(size_box) }, LIME);
+            DrawRectangleV({vector2.y, vector2.x }, { static_cast<float>(size_box), static_cast<float>(size_box) }, LIME);
 
     for (const auto& wall : WallPos)
         DrawRectangleV(wall, { static_cast<float>(size_box), static_cast<float>(size_box) }, BLACK);
 
-    for (int x = 0; x < 18; ++x)
-        DrawLine(x * size_box, 0, x * size_box, screenHeight, BLACK);
-    for (int y = 0; y < 18; ++y)
-        DrawLine(0, y * size_box, screenWidth, y * size_box, BLACK);
+    if (Timer == 0.f)
+    {
+	    for (int x = 0; x < 18; ++x)
+	        DrawLine(x * size_box, 0, x * size_box, screenHeight, BLACK);
+	    for (int y = 0; y < 18; ++y)
+	        DrawLine(0, y * size_box, screenWidth, y * size_box, BLACK);
+    }
 
     for (const auto& button : buttons)
         button->Draw();
@@ -101,7 +145,7 @@ void BuildLevelScene::onActivate()
     buttonFactory = new ButtonFactory;
 
     float ScreenHeight = GetScreenHeight();
-    float width = 186;
+    float width = 108;
     float widthButton = 78;
     float height = 50;
 
@@ -172,12 +216,28 @@ void BuildLevelScene::onActivate()
 
     buttons.push_back(
         buttonFactory->CreateButton(
+            [this]()
+            {
+                Save = true;
+            },
+            { widthButton * 5, ScreenHeight - height, widthButton, height },
+                "save", 20, Color{ 0, 49, 48, 255 },
+                Color{ 0, 149, 146, 255 }, Color{ 0, 49, 48, 50 }
+                )
+    );
+
+    buttons.push_back(
+        buttonFactory->CreateButton(
             SceneUpdate::MAIN,
             { GetScreenWidth() - width, ScreenHeight - height, width, height },
             "Exit", 20, Color{ 0, 49, 48, 255 },
             Color{ 0, 149, 146, 255 }, Color{ 0, 49, 48, 50 }
         )
     );
+
+    Save = false;
+    Timer = 0.f;
+    DelayToScreenshot = 5.f;
 }
 
 
@@ -188,4 +248,6 @@ void BuildLevelScene::onDeactivate()
     WallPos.clear();
     path.clear();
     Flag = static_cast<int>(PaintFlag::P_NONE);
+    Save = false;
+    Timer = 0.f;
 }

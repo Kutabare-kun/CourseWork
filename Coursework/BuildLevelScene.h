@@ -18,6 +18,12 @@ class BuildLevelScene
 
     int Flag : 6;
 
+    bool Save;
+    float DelayToScreenshot;
+    float Timer;
+
+    std::string fileName;
+
 public:
     void Update(float deltaTime) override;
     void Draw() override;

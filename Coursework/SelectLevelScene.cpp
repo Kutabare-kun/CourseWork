@@ -1,5 +1,8 @@
 #include "SelectLevelScene.h"
 
+#include <filesystem>
+
+
 extern std::string path_source;
 std::string SelectLevelScene::pathToLevel;
 
@@ -20,6 +23,7 @@ void SelectLevelScene::Update(float deltaTime)
 
 		UnloadTexture(level);
 		Image image = LoadImage((pathToLevel = (path_source + "\\source\\" + levelName[index].first)).c_str());
+		ImageCrop(&image, { 0,0, 576,576 });
 		ImageResize(&image, 400, 400);
 		level = LoadTextureFromImage(image);
 		UnloadImage(image);
@@ -49,11 +53,17 @@ void SelectLevelScene::Draw()
 
 void SelectLevelScene::onActivate()
 {
-	levelName.emplace_back("level.png", "Easy");
-	levelName.emplace_back("level_1.png", "Medium");
-	levelName.emplace_back("level_2.png", "Hard");
+	for (const auto & file : std::filesystem::directory_iterator(path_source + "\\source\\"))
+	{
+		std::string extension = file.path().filename().extension().string();
+		std::string filename = file.path().filename().string();
+		filename.erase(filename.end() - 4, filename.end());
+
+		levelName.emplace_back(filename + extension, filename);
+	}
 
 	Image image = LoadImage((pathToLevel = (path_source + "\\source\\" + levelName.at(index).first)).c_str());
+	ImageCrop(&image, { 0,0, 576,576 });
 	ImageResize(&image, 400, 400);
 	level = LoadTextureFromImage(image);
 	UnloadImage(image);
